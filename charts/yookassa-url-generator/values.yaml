@@ -73,6 +73,13 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+env: []
+# env:
+#   - name: YOOKASSA_SHOP_ID
+#     value: "shop_id"
+#   - name: YOOKASSA_SECRET_KEY
+#     value: "secret_key"
+
 resources:
   limits:
     cpu: 100m
