@@ -1,0 +1,9 @@
+{{- $payHost := (index .Values.ingress.hosts 0).host }}
+apiVersion: management.cattle.io/v3
+kind: Setting
+metadata:
+  name: gorizond-install-payment-url
+customized: true
+default: {{ $payHost }}
+source: ''
+value: {{ $payHost }}
