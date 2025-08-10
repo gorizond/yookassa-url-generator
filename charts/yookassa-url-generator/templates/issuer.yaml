@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: install-server
+  name: pay-yookassa-server
   labels:
     {{- include "yookassa-url-generator.labels" . | nindent 4 }}
 spec:
