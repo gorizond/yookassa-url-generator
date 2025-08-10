@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: install-server
+  labels:
+    {{- include "yookassa-url-generator.labels" . | nindent 4 }}
+spec:
+  acme:
+    email: {{ .Values.ingress.issuerMail }}
+    privateKeySecretRef:
+      name: letsencrypt-production
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+      - http01:
+          ingress:
+            class: nginx

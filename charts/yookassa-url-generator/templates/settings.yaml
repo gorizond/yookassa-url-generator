@@ -4,6 +4,6 @@ kind: Setting
 metadata:
   name: gorizond-install-payment-url
 customized: true
-default: {{ $payHost }}
+default: https://{{ $payHost }}
 source: ''
-value: {{ $payHost }}
+value: https://{{ $payHost }}

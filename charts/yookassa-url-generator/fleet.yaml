@@ -1,0 +1,18 @@
+defaultNamespace: gorizond
+
+helm:
+  values: 
+    ingress:
+      issuerMail: ${ if hasKey .ClusterAnnotations "cloudflare-email" }${ get .ClusterAnnotations "cloudflare-email" }${ else }admin@gorizond.io${ end }
+      annotations:
+        kubernetes.io/tls-acme: 'true'
+      tls: 
+        - hosts:
+          - '${ if hasKey .ClusterAnnotations "gorizond.domain.pay" }${ get .ClusterAnnotations "gorizond.domain.pay" }${ else }gorizond.cluster${ end }'
+          secretName: gorizond-install-tls
+      hosts:
+        - host: ${ if hasKey .ClusterAnnotations "gorizond.domain.pay" }${ get .ClusterAnnotations "gorizond.domain.pay" }${ else }gorizond.cluster${ end }
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      
