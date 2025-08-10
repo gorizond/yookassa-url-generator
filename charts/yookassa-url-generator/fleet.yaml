@@ -14,7 +14,7 @@ helm:
       tls: 
         - hosts:
           - '${ if hasKey .ClusterAnnotations "gorizond.domain.pay" }${ get .ClusterAnnotations "gorizond.domain.pay" }${ else }gorizond.cluster${ end }'
-          secretName: gorizond-install-tls
+          secretName: gorizond-pay-tls
       hosts:
         - host: ${ if hasKey .ClusterAnnotations "gorizond.domain.pay" }${ get .ClusterAnnotations "gorizond.domain.pay" }${ else }gorizond.cluster${ end }
           paths:
