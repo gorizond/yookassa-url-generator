@@ -158,17 +158,21 @@ func (c *PaymentURLController) HandleWebhook(ctx *gin.Context) {
 				GenerateName: "payment-",
 				Namespace:    namespace,
 			},
-			Status: provisioningv1.BillingEventStatus{
-				Type:           "payment",
-				TransitionTime: metav1.NewTime(time.Now()),
-				Amount:         floatValue,
-				BillingName:    billing,
-			},
 		}
-		if _, err := c.BillingEventController.Create(be); err != nil {
+		billingEvent, err := c.BillingEventController.Create(be)
+		if err != nil {
 			// логируем ошибку, но всегда отвечаем 200 OK, чтобы YooKassa не повторяла уведомление
 			fmt.Printf("error creating BillingEvent: %v\n", err)
 		}
+		
+		billingEvent.Status = provisioningv1.BillingEventStatus{
+			Type:           "payment",
+			TransitionTime: metav1.NewTime(time.Now()),
+			Amount:         floatValue,
+			BillingName:    billing,
+		}
+		// Update the event status
+		c.BillingEventController.UpdateStatus(billingEvent)
 	}
 
 	// подтверждаем получение webhook
