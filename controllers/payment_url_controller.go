@@ -16,9 +16,9 @@ import (
 	yoopayment "github.com/rvinnie/yookassa-sdk-go/yookassa/payment"
 	yoowebhook "github.com/rvinnie/yookassa-sdk-go/yookassa/webhook"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/dynamic"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/rest"
 )
 
 type PaymentURLController struct {
@@ -56,21 +56,16 @@ func InitPaymentURLController(ctx context.Context, config *rest.Config) {
 func (c *PaymentURLController) GeneratePaymentURL(ctx *gin.Context) {
 	// Структура для парсинга входящего JSON
 	type PaymentRequest struct {
-		Namespace string `json:"namespace"`
-		Name      string `json:"name"`
-		Amount    string `json:"amount"`
+	    Namespace string `json:"namespace" form:"namespace"`
+	    Name      string `json:"name"      form:"name"`
+	    Amount    string `json:"amount"    form:"amount"`
 	}
 
 	var req PaymentRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-	    // Попробовать получить из формы
-	    req.Namespace = ctx.PostForm("namespace")
-	    req.Name = ctx.PostForm("name")
-	    req.Amount = ctx.PostForm("amount")
-	    if req.Namespace == "" || req.Name == "" || req.Amount == "" {
-	        ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
-	        return
-	    }
+	// Один вызов — Gin сам выберет биндер по Content-Type (JSON, form, multipart)
+	if err := ctx.ShouldBind(&req); err != nil || req.Namespace == "" || req.Name == "" || req.Amount == "" {
+	    ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+	    return
 	}
 
 	// формируем запрос на создание платежа
