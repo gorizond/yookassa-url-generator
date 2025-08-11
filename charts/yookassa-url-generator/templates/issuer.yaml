@@ -8,7 +8,7 @@ spec:
   acme:
     email: {{ .Values.ingress.issuerMail }}
     privateKeySecretRef:
-      name: letsencrypt-production
+      name: letsencrypt-production-yookassa
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
       - http01:
