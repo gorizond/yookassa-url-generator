@@ -100,6 +100,10 @@ func (c *PaymentURLController) GeneratePaymentURL(ctx *gin.Context) {
 			ReturnURL: fmt.Sprintf("%s/dashboard/c/_/gorizond/provisioning.gorizond.io.billing", c.BaseURL),
 		},
 		Description: fmt.Sprintf("Payment for %s/%s", req.Namespace, req.Name),
+		Metadata: map[string]string{ // <-- новое
+	        "namespace": req.Namespace,
+	        "billing":   req.Name,
+		},
 	}
 
 	// создаём платёж и получаем ссылку для оплаты
@@ -131,8 +135,18 @@ func (c *PaymentURLController) HandleWebhook(ctx *gin.Context) {
 		}
 		// извлекаем namespace и billing из описания платежа
 		var namespace, billing string
-		fmt.Sscanf(paymentData.Description, "Payment for %s/%s", &namespace, &billing)
-
+		// 1) Пытаемся из metadata (надёжно)
+		if m, ok := paymentData.Metadata.(map[string]interface{}); ok {
+		    if v, ok := m["namespace"].(string); ok { namespace = v }
+		    if v, ok := m["billing"].(string); ok { billing = v }
+		}
+		
+		// 2) Фолбэк на description (если вдруг metadata пустое)
+		if namespace == "" || billing == "" {
+		    // "Payment for <ns>/<billing>", где <ns> может содержать '-'
+		    fmt.Sscanf(paymentData.Description, "Payment for %[^/]/%s", &namespace, &billing)
+		    // %[^/] читает до первого '/', затем %s — остальное (без пробелов)
+		}
 		floatValue, err := strconv.ParseFloat(paymentData.Amount.Value, 64)
 		if err != nil {
 			fmt.Println("Error parse ParseFloat:", err)
