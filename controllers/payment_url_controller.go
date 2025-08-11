@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	provisioningv1 "github.com/gorizond/gorizond-cluster/pkg/apis/provisioning.gorizond.io/v1"
 	provisioningv1Controller "github.com/gorizond/gorizond-cluster/pkg/generated/controllers/provisioning.gorizond.io/v1"
+	controllersGorizond "github.com/gorizond/gorizond-cluster/pkg/generated/controllers/provisioning.gorizond.io"
 	"github.com/rvinnie/yookassa-sdk-go/yookassa"
 	yoocommon "github.com/rvinnie/yookassa-sdk-go/yookassa/common"
 	yoopayment "github.com/rvinnie/yookassa-sdk-go/yookassa/payment"
@@ -39,9 +40,28 @@ func InitPaymentURLController(ctx context.Context, config *rest.Config) {
 	if err != nil {
 		panic(fmt.Sprintf("failed to get payment base url: %v", err))
 	}
+	// 1) Создаём factory для generated контроллеров
+    factory, err := controllersGorizond.NewFactoryFromConfig(config)
+    if err != nil {
+        panic(fmt.Errorf("failed to build controller factory: %w", err))
+    }
+
+    // 2) Получаем контроллер нужного ресурса
+    beController := factory.Provisioning().V1().BillingEvent()
+    // 3) Запускаем factory и ждём синхронизацию кэшей
+    go func() {
+        if err := factory.Start(ctx, 2 /* threads */); err != nil {
+            panic(fmt.Errorf("factory start failed: %w", err))
+        }
+    }()
+    if err := factory.Sync(ctx); err != nil {
+        panic(fmt.Errorf("factory sync failed: %w", err))
+    }
+    
 	controller := &PaymentURLController{
 		PaymentHandler: paymentHandler,
 		BaseURL:        baseURL,
+		BillingEventController: beController,
 	}
 
 	router := gin.Default()
