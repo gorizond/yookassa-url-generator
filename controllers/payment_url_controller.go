@@ -77,7 +77,7 @@ func (c *PaymentURLController) GeneratePaymentURL(ctx *gin.Context) {
 		PaymentMethod: yoopayment.PaymentMethodType("bank_card"),
 		Confirmation: yoopayment.Redirect{
 			Type: yoopayment.TypeRedirect,
-			ReturnURL: fmt.Sprintf("%s/dashboard/c/_/gorizond/provisioning.gorizond.io.billing", c.BaseURL, req.Namespace, req.Name),
+			ReturnURL: fmt.Sprintf("%s/dashboard/c/_/gorizond/provisioning.gorizond.io.billing", c.BaseURL),
 		},
 		Description: fmt.Sprintf("Payment for %s/%s", req.Namespace, req.Name),
 	}
@@ -154,7 +154,7 @@ func GetPaymentBaseURL(ctx context.Context, config *rest.Config) (string, error)
 		Resource: "settings",
 	}
 
-	setting, err := dynClient.Resource(gvr).Get(ctx, "gorizond-install-payment-url", metav1.GetOptions{})
+	setting, err := dynClient.Resource(gvr).Get(ctx, "server-url", metav1.GetOptions{})
 	if err != nil {
 		return "", err
 	}
