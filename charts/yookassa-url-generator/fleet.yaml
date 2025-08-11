@@ -4,7 +4,7 @@ helm:
   values:
     env:
       - name: YOOKASSA_SHOP_ID
-        value: "${ if hasKey .ClusterAnnotations 'gorizond.yookassa.id' }${ get .ClusterAnnotations 'gorizond.yookassa.id' }${ else }ID${ end }"
+        value: ${ if hasKey .ClusterAnnotations "gorizond.yookassa.id" }${ get .ClusterAnnotations "gorizond.yookassa.id" }${ else }ID${ end }
       - name: YOOKASSA_SECRET_KEY
         value: ${ if hasKey .ClusterAnnotations "gorizond.yookassa.key" }${ get .ClusterAnnotations "gorizond.yookassa.key" }${ else }KEY${ end }
     ingress:
