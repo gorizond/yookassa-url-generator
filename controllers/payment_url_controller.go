@@ -63,8 +63,14 @@ func (c *PaymentURLController) GeneratePaymentURL(ctx *gin.Context) {
 
 	var req PaymentRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
-		return
+	    // Попробовать получить из формы
+	    req.Namespace = ctx.PostForm("namespace")
+	    req.Name = ctx.PostForm("name")
+	    req.Amount = ctx.PostForm("amount")
+	    if req.Namespace == "" || req.Name == "" || req.Amount == "" {
+	        ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+	        return
+	    }
 	}
 
 	// формируем запрос на создание платежа
