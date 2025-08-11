@@ -3,6 +3,16 @@ entries:
   yookassa-url-generator:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2025-08-11T10:09:33.19871692Z"
+    description: A Helm chart for Kubernetes
+    digest: ff7350fd730a9746fb0d43d6a3c09b250b7c320f7331f4724eb931f43eedcb02
+    name: yookassa-url-generator
+    type: application
+    urls:
+    - https://github.com/gorizond/yookassa-url-generator/releases/download/yookassa-url-generator-0.0.5/yookassa-url-generator-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2025-08-11T08:57:04.86688448Z"
     description: A Helm chart for Kubernetes
     digest: 442c18d2226ae90cb6f02e95450c22a702d0800d7030693426e09acf59c72a3b
@@ -41,4 +51,4 @@ entries:
     urls:
     - https://github.com/gorizond/yookassa-url-generator/releases/download/yookassa-url-generator-0.0.1/yookassa-url-generator-0.0.1.tgz
     version: 0.0.1
-generated: "2025-08-11T08:57:04.866899869Z"
+generated: "2025-08-11T10:09:33.198740765Z"
